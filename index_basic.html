@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mars Rover - BASIC JS</title>
+	<meta charset="UTF-8">
+
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+	<h1>Open your inspector to view result in your console.</h1>
+	<i style="margin-left: 10px">hint:ctrl + shift + i || f12</i>
+</body>
+</html> 
+
+<script>
+
+var roverInstructions = {
+		iV:{x:5,y:5},
+		rI:[	
+			{x:1, y:2, direction:"N",instructions:"LMLMLMLMM"},
+			{x:3, y:3, direction:"E",instructions:"MMRMMRMRRM"}
+		]	
+	};
+
+var directions = ['N','E','S','W'];
+goGoRover(roverInstructions);
+
+function goGoRover(rover)
+{
+	if (rover.rI) {
+
+		$.each(rover.rI,function(k,v)
+		{
+			// console.log(v);
+			$.each(v.instructions.split(""),function(key,value)
+			{
+				// console.log("value: "+value);
+				// console.log("key: "+key);
+				switch(value)
+				{
+					case "L":{
+						rover.rI[k] = turnLeft(rover.rI[k]);
+					}
+						break;
+					case "R":{
+						rover.rI[k] = turnRight(rover.rI[k]);
+					}
+						break;
+					case "M":{
+						rover.rI[k] = move(rover.rI[k]);
+					}
+						break;
+				}
+			});	
+		});
+	}
+
+	console.log("Rover 1 Position: " );
+	console.log(rover.rI[0] );
+	console.log("---------------------------------------------------" );
+	console.log("Rover 1 Position: " );
+	console.log(rover.rI[1] );
+	console.log("---------------------------------------------------" );
+}
+
+function turnLeft(rover)
+{
+	// console.log('HERE');
+	// console.log(rover);
+	var newPos =  (directions.indexOf(rover.direction) == 0  ? newPos = directions[3] : newPos = directions[directions.indexOf(rover.direction)-1]);
+
+	rover.direction = newPos;
+	// console.log(newPos);
+
+	return rover;
+
+}
+
+function turnRight(rover)
+{
+	var newPos =  (directions.indexOf(rover.direction) == 3  ? newPos = directions[0] : newPos = directions[directions.indexOf(rover.direction)+1]);
+
+	rover.direction = newPos;
+	// console.log(newPos);
+
+	return rover;
+}
+
+function move(rover)
+{
+	var newPos = 0;
+
+	switch(rover.direction) 
+	{
+    case "N":
+    {
+			rover.y = rover.y + 1;
+    }
+        break;
+    case "E":
+    {    	
+			rover.x = rover.x + 1;
+    }
+        break;
+    case "S":
+    {    	
+			rover.y = rover.y - 1;
+    }
+        break;
+    case "W":
+    {
+			rover.x = rover.x - 1; 	
+    }
+        break;
+	} 
+
+	// console.log(rover);
+	return rover;
+}
+
+</script>

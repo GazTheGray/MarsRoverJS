@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Mars Rover - BASIC JS</title>
+	<meta charset="UTF-8">
+
+	<!-- Bootstrap -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+	<style type="text/css">
+		.row{
+			margin: 0 15 0 15
+		}
+	</style>
+</head>
+
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+			  <div class="card-header">
+			    <h4>Instructions</h4>
+			  </div>
+			  <div class="card-block">
+			    <p class="card-text">Please type in the instructions into the below textarea. </p>
+			    <ul>
+			    	<li>Rover Instructions separated by a new line.</li>
+			    	<li>Rover Instructions details separated by comma's " , ".</li>
+			    	<li><b>Example: </b><br>
+			    		5,5<br>
+			    		1,2,N,LMLMLMLMM<br>
+			    		3,3,E,MMRMMRMRRM
+			    	</li>			    	
+			    </ul>
+			    <textarea id="txta-instr" class="form-control" rows="10"></textarea>
+			    <button class="btn btn-primary" onclick="goGoRover()">Go Go Mars Rovers</button> 
+			  </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>
+ 	 <script src="marsRover.js"></script> 
+</html> 
+
+<script>
+var directions = ['N','E','S','W'];
+
+function goGoRover()
+{
+	var lines = $('#txta-instr').val().split('\n');
+	var spl = lines[0].split(",");	
+	var spl1 = lines[1].split(",");	
+	var spl2 = lines[2].split(",");	
+
+	var roverInstructions = {
+		iV:{x:spl[0],y:spl[1]},
+		rI:[	
+			{x:spl1[0], y:spl1[1], direction:spl1[2],instructions:spl1[3]},
+			{x:spl2[0], y:spl2[1], direction:spl2[2],instructions:spl2[3]}
+		]	
+	};
+
+	if (roverInstructions.rI) {
+
+		$.each(roverInstructions.rI,function(k,v)
+		{
+			// console.log(v);
+			$.each(v.instructions.split(""),function(key,value)
+			{
+				// console.log("value: "+value);
+				// console.log("key: "+key);
+				switch(value)
+				{
+					case "L":{
+						roverInstructions.rI[k] = turnLeft(roverInstructions.rI[k]);
+					}
+						break;
+					case "R":{
+						roverInstructions.rI[k] = turnRight(roverInstructions.rI[k]);
+					}
+						break;
+					case "M":{
+						roverInstructions.rI[k] = move(roverInstructions.rI[k],roverInstructions.iV);
+					}
+						break;
+				}
+			});	
+		});
+	}
+
+	console.log("Rover 1 Position: " );
+	console.log(roverInstructions.rI[0] );
+	console.log("---------------------------------------------------" );
+	console.log("Rover 1 Position: " );
+	console.log(roverInstructions.rI[1] );
+	console.log("---------------------------------------------------" );
+
+	var out ="";
+
+	$.each(roverInstructions.rI[0], function(index, val) {
+	    console.log(val.category);
+	    out += index + " : " + val + ", "
+	});
+
+	out += "\n" ;
+
+	$.each(roverInstructions.rI[1], function(index, val) {
+	    console.log(val.category);
+	    out +=  index + " : " + val + ", "
+	});
+
+	$('#txta-instr').val(out);
+}
+
+function turnLeft(rover)
+{
+	// console.log('HERE');
+	// console.log(rover);
+	var newPos =  (directions.indexOf(rover.direction) == 0  ? newPos = directions[3] : newPos = directions[directions.indexOf(rover.direction)-1]);
+
+	rover.direction = newPos;
+	// console.log(newPos);
+
+	return rover;
+
+}
+
+function turnRight(rover)
+{
+	var newPos =  (directions.indexOf(rover.direction) == 3  ? newPos = directions[0] : newPos = directions[directions.indexOf(rover.direction)+1]);
+
+	rover.direction = newPos;
+	// console.log(newPos);
+
+	return rover;
+}
+
+function move(rover,iV)
+{
+	var newPos = 0;
+
+	console.log(rover);
+
+	switch(rover.direction) 
+	{
+    case "N":
+    {
+    	if (rover.y < iV.y) {    		
+				rover.y ++;
+    	} 	//else does not move out of bounds,next intruction
+    }
+        break;
+    case "E":
+    {  
+    	if (rover.x < iV.x) {   	
+				rover.x ++;
+			}
+    }
+        break;
+    case "S":
+    {    
+    	if (rover.y > 0) {  	
+				rover.y --;
+	    }
+    }
+        break;
+    case "W":
+    {
+    	if (rover.y > 0) {
+				rover.x--; 	
+	    }
+    }
+        break;
+	} 
+
+	// console.log(rover);
+	return rover;
+}
+
+</script>
